@@ -6,6 +6,7 @@ import PageLoader from "@/components/PageLoader";
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const [contentReady, setContentReady] = useState(false);
 
   useEffect(() => {
     const startedAt = performance.now();
@@ -45,19 +46,25 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!loading) document.body.style.overflow = "";
-  }, [loading]);
+    if (contentReady) document.body.style.overflow = "";
+  }, [contentReady]);
 
   return (
     <div className="relative min-h-screen">
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" onExitComplete={() => setContentReady(true)}>
         {loading && <PageLoader key="page-loader" />}
       </AnimatePresence>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: loading ? 0 : 1 }} transition={{ duration: 0.55, delay: loading ? 0 : 0.1 }} aria-hidden={loading}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </motion.div>
+      {contentReady && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.55, delay: 0.1 }}
+        >
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </motion.div>
+      )}
     </div>
   );
 }

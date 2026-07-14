@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { HashLink } from "react-router-hash-link";
 import { ArrowUpRight, CheckCircle2, ShieldCheck } from "lucide-react";
 import { FaInstagram, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
-import logo from "@/assets/navbar/Frame 2147231503.png";
-import codesinc from "@/assets/footer/image 13 (2).png";
+import logo from "@/assets/navbar/anonymoose-logo.png";
+import codesinc from "@/assets/footer/codesinc-credit.png";
 import { useDrawer } from "@/components/Drawer";
 
 const productLinks = [

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { animate, motion, useMotionValue } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { CheckCircle2, MoveHorizontal } from "lucide-react";
 
 const outcomes = [
@@ -104,7 +104,7 @@ function Workplace() {
   const trackRef = useRef(null);
   const draggingRef = useRef(false);
   const [isSlider, setIsSlider] = useState(false);
-  const [maxOffset, setMaxOffset] = useState(0);
+  const [loopWidth, setLoopWidth] = useState(0);
   const sliderX = useMotionValue(0);
 
   useEffect(() => {
@@ -118,12 +118,8 @@ function Workplace() {
   useEffect(() => {
     const measureSlider = () => {
       if (!sliderRef.current || !trackRef.current) return;
-      setMaxOffset(
-        Math.max(
-          0,
-          trackRef.current.scrollWidth - sliderRef.current.clientWidth,
-        ),
-      );
+      const firstSet = trackRef.current.firstElementChild;
+      setLoopWidth(firstSet?.getBoundingClientRect().width ?? 0);
     };
 
     measureSlider();
@@ -132,29 +128,27 @@ function Workplace() {
   }, [isSlider]);
 
   useEffect(() => {
-    if (!isSlider || maxOffset === 0) {
-      animate(sliderX, 0, { duration: 0.45 });
+    if (!isSlider || loopWidth === 0) {
+      sliderX.set(0);
       return undefined;
     }
 
-    let movement;
-    const interval = window.setInterval(() => {
-      if (draggingRef.current) return;
-      const current = sliderX.get();
-      const next =
-        current <= -maxOffset + 24 ? 0 : Math.max(current - 286, -maxOffset);
-      movement?.stop();
-      movement = animate(sliderX, next, {
-        duration: next === 0 ? 0.9 : 0.7,
-        ease: [0.22, 1, 0.36, 1],
-      });
-    }, 3200);
-
-    return () => {
-      window.clearInterval(interval);
-      movement?.stop();
+    let frame;
+    let previousTime = performance.now();
+    const scroll = (time) => {
+      const elapsed = Math.min(time - previousTime, 40);
+      previousTime = time;
+      if (!draggingRef.current) {
+        let next = sliderX.get() - elapsed * 0.035;
+        if (next <= -loopWidth) next += loopWidth;
+        sliderX.set(next);
+      }
+      frame = requestAnimationFrame(scroll);
     };
-  }, [isSlider, maxOffset, sliderX]);
+    frame = requestAnimationFrame(scroll);
+
+    return () => cancelAnimationFrame(frame);
+  }, [isSlider, loopWidth, sliderX]);
 
   return (
     <section
@@ -243,25 +237,35 @@ function Workplace() {
           <motion.div
             ref={trackRef}
             drag={isSlider ? "x" : false}
-            dragConstraints={sliderRef}
+            dragConstraints={{ left: -loopWidth, right: 0 }}
             dragElastic={0.12}
-            dragMomentum
+            dragMomentum={false}
             style={{ x: sliderX }}
             onDragStart={() => {
               draggingRef.current = true;
             }}
             onDragEnd={() => {
+              if (loopWidth) {
+                const current = sliderX.get();
+                sliderX.set(-(((-current % loopWidth) + loopWidth) % loopWidth));
+              }
               draggingRef.current = false;
             }}
             whileDrag={{ cursor: "grabbing" }}
             transition={{ type: "spring", stiffness: 170, damping: 24 }}
-            className="flex w-max cursor-grab gap-4 py-2 xl:grid xl:w-auto xl:cursor-default xl:grid-cols-4 xl:gap-5"
+            className="flex w-max cursor-grab py-2 xl:w-auto xl:cursor-default"
           >
+            {Array.from({ length: isSlider ? 2 : 1 }, (_, copyIndex) => (
+              <div
+                key={copyIndex}
+                aria-hidden={copyIndex > 0}
+                className="flex shrink-0 gap-4 pr-4 xl:grid xl:w-full xl:grid-cols-4 xl:gap-5 xl:pr-0"
+              >
             {outcomes.map((outcome, index) => {
               const direction = directions[index];
               return (
                 <motion.div
-                  key={outcome.title}
+                  key={`${copyIndex}-${outcome.title}`}
                   initial={{
                     opacity: 0,
                     x: direction.x,
@@ -368,6 +372,8 @@ function Workplace() {
                 </motion.div>
               );
             })}
+              </div>
+            ))}
           </motion.div>
         </div>
       </div>

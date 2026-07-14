@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ChevronDown, Search, Sparkles } from "lucide-react";
-import faqImage from "@/assets/faqs/image 3744.png";
+import faqImage from "@/assets/faqs/workplace-feedback.webp";
 import { useDrawer } from "@/components/Drawer";
 
 const faqs = [

@@ -8,7 +8,7 @@ import {
   Shield,
   SlidersHorizontal,
 } from "lucide-react";
-import featureImage from "@/assets/features/Rectangle 1000002159.png";
+import featureImage from "@/assets/features/employee-platform.webp";
 
 const features = [
   {

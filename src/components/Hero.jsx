@@ -17,10 +17,10 @@ import {
   Zap,
 } from "lucide-react";
 import { FaStar } from "react-icons/fa";
-import video from "@/assets/hero/Animate_analytics_charts_cards_202607141123.mp4";
-import avatar1 from "@/assets/hero/avatar-1.jpg (1).png";
-import avatar2 from "@/assets/hero/avatar-3.jpg.png";
-import avatar3 from "@/assets/hero/avatar-5.jpg (2).png";
+import video from "@/assets/hero/analytics-background-1080p.mp4";
+import avatar1 from "@/assets/hero/avatar-1.png";
+import avatar2 from "@/assets/hero/avatar-2.png";
+import avatar3 from "@/assets/hero/avatar-3.png";
 import { useDrawer } from "@/components/Drawer";
 
 const avatars = [avatar1, avatar2, avatar3];
@@ -154,12 +154,12 @@ function Hero() {
         loop
         playsInline
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover object-[59%_center] max-lg:opacity-50 lg:object-center"
+        className="absolute inset-0 h-full w-full object-cover object-[59%_center] opacity-90 [filter:brightness(1.08)_contrast(1.08)_saturate(1.22)] lg:object-center lg:opacity-100"
       >
         <source src={video} type="video/mp4" />
       </video>
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,9,11,.98)_0%,rgba(12,9,11,.86)_25%,rgba(12,9,11,.22)_62%,rgba(12,9,11,.06)_100%)]" />
-      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#0b080a] to-transparent" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,9,11,.93)_0%,rgba(12,9,11,.72)_27%,rgba(12,9,11,.12)_62%,rgba(12,9,11,.02)_100%)]" />
+      <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#0b080a]/90 to-transparent" />
 
       <section className="relative z-10 mx-auto flex min-h-[870px] max-w-[1500px] items-center px-6 pb-14 pt-6 sm:px-10 sm:pt-10 lg:px-12 2xl:px-0">
         <motion.div

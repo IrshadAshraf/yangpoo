@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { BarChart3, LockKeyhole, Play, ShieldCheck } from "lucide-react";
-import primaryImage from "@/assets/platform/image 3746.png";
-import secondaryImage from "@/assets/platform/image 3743.png";
+import primaryImage from "@/assets/platform/team-collaboration.webp";
+import secondaryImage from "@/assets/platform/team-insights.webp";
 import { useDrawer } from "@/components/Drawer";
 
 const features = [

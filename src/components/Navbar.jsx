@@ -11,7 +11,7 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import logo from "@/assets/navbar/Frame 2147231503.png";
+import logo from "@/assets/navbar/anonymoose-logo.png";
 import { useDrawer } from "@/components/Drawer";
 
 const links = [

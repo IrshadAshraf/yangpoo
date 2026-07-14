@@ -7,7 +7,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { ArrowRight, Layers3, Play, Target, TrendingUp } from "lucide-react";
-import dashboard from "@/assets/workforce/Rectangle.png";
+import dashboard from "@/assets/workforce/analytics-dashboard.webp";
 import { useDrawer } from "@/components/Drawer";
 
 const capabilities = [

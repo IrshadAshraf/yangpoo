@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { animate, motion, useMotionValue } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import {
   ArrowRight,
   CheckCircle2,
@@ -8,9 +8,9 @@ import {
   Sparkles,
   UserRound,
 } from "lucide-react";
-import imageOne from "@/assets/latest news/image 3745.png";
-import imageTwo from "@/assets/latest news/image 3747.png";
-import imageThree from "@/assets/latest news/team brainstorming around a table.png";
+import imageOne from "@/assets/latest-news/employee-retention.webp";
+import imageTwo from "@/assets/latest-news/workplace-listening.webp";
+import imageThree from "@/assets/latest-news/team-brainstorming.webp";
 import { useDrawer } from "@/components/Drawer";
 
 const articles = [
@@ -154,7 +154,7 @@ function LatestNews() {
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
   const draggingRef = useRef(false);
-  const [maxOffset, setMaxOffset] = useState(0);
+  const [loopWidth, setLoopWidth] = useState(0);
   const sliderX = useMotionValue(0);
   const readArticle = (article) =>
     openDrawer({
@@ -168,12 +168,8 @@ function LatestNews() {
   useEffect(() => {
     const measure = () => {
       if (!viewportRef.current || !trackRef.current) return;
-      setMaxOffset(
-        Math.max(
-          0,
-          trackRef.current.scrollWidth - viewportRef.current.clientWidth,
-        ),
-      );
+      const firstSet = trackRef.current.firstElementChild;
+      setLoopWidth(firstSet?.getBoundingClientRect().width ?? 0);
     };
     measure();
     window.addEventListener("resize", measure);
@@ -181,29 +177,22 @@ function LatestNews() {
   }, []);
 
   useEffect(() => {
-    if (maxOffset === 0) return undefined;
-    let movement;
-    const interval = window.setInterval(() => {
-      if (draggingRef.current) return;
-      const current = sliderX.get();
-      const cardWidth =
-        trackRef.current?.firstElementChild?.getBoundingClientRect().width ??
-        420;
-      const next =
-        current <= -maxOffset + 28
-          ? 0
-          : Math.max(current - cardWidth - 24, -maxOffset);
-      movement?.stop();
-      movement = animate(sliderX, next, {
-        duration: next === 0 ? 1 : 0.75,
-        ease: [0.22, 1, 0.36, 1],
-      });
-    }, 3600);
-    return () => {
-      window.clearInterval(interval);
-      movement?.stop();
+    if (loopWidth === 0) return undefined;
+    let frame;
+    let previousTime = performance.now();
+    const scroll = (time) => {
+      const elapsed = Math.min(time - previousTime, 40);
+      previousTime = time;
+      if (!draggingRef.current) {
+        let next = sliderX.get() - elapsed * 0.04;
+        if (next <= -loopWidth) next += loopWidth;
+        sliderX.set(next);
+      }
+      frame = requestAnimationFrame(scroll);
     };
-  }, [maxOffset, sliderX]);
+    frame = requestAnimationFrame(scroll);
+    return () => cancelAnimationFrame(frame);
+  }, [loopWidth, sliderX]);
 
   return (
     <section
@@ -289,22 +278,33 @@ function LatestNews() {
           <motion.div
             ref={trackRef}
             drag="x"
-            dragConstraints={viewportRef}
+            dragConstraints={{ left: -loopWidth, right: 0 }}
             dragElastic={0.1}
-            dragMomentum
+            dragMomentum={false}
             style={{ x: sliderX }}
             onDragStart={() => {
               draggingRef.current = true;
             }}
             onDragEnd={() => {
+              if (loopWidth) {
+                const current = sliderX.get();
+                sliderX.set(-(((-current % loopWidth) + loopWidth) % loopWidth));
+              }
               draggingRef.current = false;
             }}
             whileDrag={{ cursor: "grabbing" }}
-            className="flex w-max cursor-grab gap-6"
+            className="flex w-max cursor-grab"
           >
+            {[0, 1].map((copyIndex) => (
+              <div
+                key={copyIndex}
+                aria-hidden={copyIndex > 0}
+                inert={copyIndex > 0 ? true : undefined}
+                className="flex shrink-0 gap-6 pr-6"
+              >
             {articles.map((article, index) => (
               <motion.div
-                key={article.title}
+                key={`${copyIndex}-${article.title}`}
                 initial={{
                   opacity: 0,
                   y: 45,
@@ -432,6 +432,8 @@ function LatestNews() {
                   </motion.article>
                 </motion.div>
               </motion.div>
+            ))}
+              </div>
             ))}
           </motion.div>
           <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#100e0f] to-transparent sm:w-20" />

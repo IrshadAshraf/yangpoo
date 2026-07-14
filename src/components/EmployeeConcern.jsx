@@ -244,7 +244,6 @@ function EmployeeConcern() {
                 damping: 17,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              whileHover={{ y: -6 }}
               className="group relative text-center [perspective:500px]"
             >
               <motion.p
@@ -263,7 +262,6 @@ function EmployeeConcern() {
                   ease: "easeInOut",
                   delay: index * 0.3,
                 }}
-                whileHover={{ scale: 1.12, color: "var(--brand)" }}
                 className="relative mx-auto w-fit overflow-hidden text-xl font-medium sm:text-2xl"
               >
                 {stat.value}
@@ -281,16 +279,9 @@ function EmployeeConcern() {
                   />
                 )}
               </motion.p>
-              <motion.p
-                whileHover={{
-                  color: "rgba(255,255,255,.75)",
-                  letterSpacing: "0.17em",
-                }}
-                transition={{ duration: 0.3 }}
-                className="mt-2 text-[10px] uppercase tracking-[0.12em] text-white/35 sm:text-xs"
-              >
+              <p className="mt-2 text-[10px] uppercase tracking-[0.12em] text-white/35 sm:text-xs">
                 {stat.label}
-              </motion.p>
+              </p>
               {index < stats.length - 1 && (
                 <motion.span
                   initial={{ scaleY: 0, opacity: 0 }}
