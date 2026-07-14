@@ -161,7 +161,7 @@ function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,9,11,.98)_0%,rgba(12,9,11,.86)_25%,rgba(12,9,11,.22)_62%,rgba(12,9,11,.06)_100%)]" />
       <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#0b080a] to-transparent" />
 
-      <section className="relative z-10 mx-auto flex min-h-[870px] max-w-[1500px] items-center px-6 pb-14 pt-6 sm:px-10 sm:pt-44 lg:px-12 2xl:px-0">
+      <section className="relative z-10 mx-auto flex min-h-[870px] max-w-[1500px] items-center px-6 pb-14 pt-6 sm:px-10 sm:pt-10 lg:px-12 2xl:px-0">
         <motion.div
           initial={{ opacity: 0, x: -35 }}
           animate={{ opacity: 1, x: 0 }}
