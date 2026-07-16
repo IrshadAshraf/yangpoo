@@ -23,8 +23,8 @@ function LogoSet({ hidden = false }) {
         <motion.div
           key={partner.name}
           className="group flex h-16 w-[135px] shrink-0 items-center justify-center sm:h-20 sm:w-[165px] lg:w-[190px]"
-          whileHover={{ scale: 1.1, y: -4 }}
-          transition={{ type: "spring", stiffness: 360, damping: 22 }}
+          whileHover={{ scale: 1.06, y: -3 }}
+          transition={{ type: "spring", stiffness: 155, damping: 23, mass: 0.8 }}
         >
           <img
             src={partner.logo}

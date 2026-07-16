@@ -9,6 +9,7 @@ import learnerThree from "@/assets/stay relevant/b0ad796a9adec09d2e3a4ba72212a70
 import students from "@/assets/stay relevant/c0a5d94df99016b3d407e937e6ed573b6659b7ae.png";
 import graduate from "@/assets/stay relevant/e31118814e68db2c094bc4ffc513efd6517c7475.png";
 import heroBackground from "@/assets/hero/8af6802efbfff90b980714f6ef395f7575829c33.png";
+import AnimatedButton from "@/components/ui/AnimatedButton";
 
 const cards = [
   {
@@ -48,12 +49,12 @@ function FloatingCard({ card, activeCard, setActiveCard }) {
   const isActive = activeCard === card.id;
 
   return (
-    <motion.button
+    <AnimatedButton
       type="button"
       layout
       onClick={() => setActiveCard(isActive ? null : card.id)}
       aria-expanded={isActive}
-      className={`group relative z-30 w-full overflow-hidden rounded-2xl bg-white p-[2px] text-left shadow-[0_16px_45px_rgba(20,31,61,0.16)] lg:w-[280px] ${card.position}`}
+      className={`motion-card-smooth group relative z-30 w-full overflow-hidden rounded-2xl bg-white p-[2px] text-left shadow-[0_16px_45px_rgba(20,31,61,0.16)] lg:w-[280px] ${card.position}`}
       initial={{ opacity: 0, y: 35, scale: 0.92 }}
       whileInView={{ opacity: 1, y: [0, -8, 0], scale: 1 }}
       viewport={{ once: true, amount: 0.25 }}
@@ -76,7 +77,7 @@ function FloatingCard({ card, activeCard, setActiveCard }) {
         animate={{ rotate: 360 }}
         transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
       />
-      <div className="rounded-[14px] bg-white px-4 py-4">
+      <div className="motion-card-fill rounded-[14px] bg-white px-4 py-4">
         <div className="flex items-center gap-3">
           <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-sky-50 text-sky-500 transition-transform group-hover:scale-110">
             <Icon size={22} />
@@ -107,7 +108,7 @@ function FloatingCard({ card, activeCard, setActiveCard }) {
           )}
         </AnimatePresence>
       </div>
-    </motion.button>
+    </AnimatedButton>
   );
 }
 
@@ -120,7 +121,7 @@ function AnimatedImage({
 }) {
   return (
     <motion.div
-      className={`relative overflow-hidden rounded-[18px] p-[2px] sm:rounded-[24px] lg:rounded-[30px] ${className}`}
+      className={`relative ${className}`}
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ y: [0, -9, 0] }}
       whileInView={{ opacity: 1, scale: 1 }}
@@ -135,21 +136,34 @@ function AnimatedImage({
           delay: floatDelay,
         },
       }}
-      whileHover={{ y: -8, scale: 1.015 }}
     >
-      <motion.span
-        aria-hidden="true"
-        className="absolute -inset-[80%] bg-[conic-gradient(from_30deg,transparent_10%,#60c4ff_24%,#0C529F_36%,transparent_48%)]"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
-      />
-      <div className="relative h-full overflow-hidden rounded-[16px] bg-white p-[2px] sm:rounded-[22px] lg:rounded-[28px] lg:p-[3px]">
-        <img
-          src={src}
-          alt={alt}
-          className={`h-full w-full rounded-[14px] object-cover sm:rounded-[20px] lg:rounded-[25px] ${imageClassName}`}
+      <motion.div
+        className="motion-card-smooth relative h-full w-full overflow-hidden rounded-[18px] p-[2px] sm:rounded-[24px] lg:rounded-[30px]"
+        whileHover={{
+          y: -7,
+          scale: 1.01,
+          transition: {
+            type: "spring",
+            stiffness: 155,
+            damping: 23,
+            mass: 0.9,
+          },
+        }}
+      >
+        <motion.span
+          aria-hidden="true"
+          className="absolute -inset-[80%] bg-[conic-gradient(from_30deg,transparent_10%,#60c4ff_24%,#0C529F_36%,transparent_48%)]"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
         />
-      </div>
+        <div className="relative h-full overflow-hidden rounded-[16px] bg-white p-[2px] sm:rounded-[22px] lg:rounded-[28px] lg:p-[3px]">
+          <img
+            src={src}
+            alt={alt}
+            className={`h-full w-full rounded-[14px] object-cover sm:rounded-[20px] lg:rounded-[25px] ${imageClassName}`}
+          />
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -158,7 +172,7 @@ export default function StayRelevant() {
   const [activeCard, setActiveCard] = useState(null);
 
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,#f3f9ff_0%,#f3f9ff_48%,#ffffff_72%,#ffffff_100%)] py-20 sm:py-24 lg:pb-28 lg:pt-0">
+    <section className="relative overflow-y-visible overflow-x-clip bg-[linear-gradient(to_bottom,#f3f9ff_0%,#f3f9ff_48%,#ffffff_72%,#ffffff_100%)] py-20 sm:py-24 lg:pb-28 lg:pt-0">
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute -inset-x-[5%] -top-[5%] h-[68%] bg-cover bg-center [mask-image:linear-gradient(to_bottom,black_0%,black_76%,transparent_100%)]"
@@ -211,11 +225,36 @@ export default function StayRelevant() {
           />
           <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,.4)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.4)_1px,transparent_1px)] [background-size:64px_64px]" />
           {[
-            { className: "left-[8%] top-[18%] size-16", x: [0, 34, 5, 0], y: [0, -24, 22, 0], delay: 0 },
-            { className: "right-[12%] top-[24%] size-24", x: [0, -28, 12, 0], y: [0, 28, -18, 0], delay: 0.5 },
-            { className: "left-[42%] top-[55%] size-12", x: [0, 20, -18, 0], y: [0, -32, 15, 0], delay: 1 },
-            { className: "right-[25%] bottom-[8%] size-20", x: [0, -22, 26, 0], y: [0, -18, 24, 0], delay: 1.4 },
-            { className: "left-[18%] bottom-[12%] size-9", x: [0, 25, -8, 0], y: [0, -26, 12, 0], delay: 1.8 },
+            {
+              className: "left-[8%] top-[18%] size-16",
+              x: [0, 34, 5, 0],
+              y: [0, -24, 22, 0],
+              delay: 0,
+            },
+            {
+              className: "right-[12%] top-[24%] size-24",
+              x: [0, -28, 12, 0],
+              y: [0, 28, -18, 0],
+              delay: 0.5,
+            },
+            {
+              className: "left-[42%] top-[55%] size-12",
+              x: [0, 20, -18, 0],
+              y: [0, -32, 15, 0],
+              delay: 1,
+            },
+            {
+              className: "right-[25%] bottom-[8%] size-20",
+              x: [0, -22, 26, 0],
+              y: [0, -18, 24, 0],
+              delay: 1.4,
+            },
+            {
+              className: "left-[18%] bottom-[12%] size-9",
+              x: [0, 25, -8, 0],
+              y: [0, -26, 12, 0],
+              delay: 1.8,
+            },
           ].map((bubble, index) => (
             <motion.span
               key={bubble.className}
@@ -236,7 +275,7 @@ export default function StayRelevant() {
             />
           ))}
           <motion.h2
-            className="relative z-10 max-w-[590px] text-[30px] font-semibold leading-[1.18] tracking-[-0.035em] sm:text-[43px]"
+            className="relative z-10 max-w-[590px] text-[35px] font-semibold leading-[1.18] tracking-[-0.035em] sm:text-[43px]"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -264,7 +303,7 @@ export default function StayRelevant() {
               {[learnerOne, learnerTwo, learnerThree].map((learner, index) => (
                 <motion.div
                   key={learner}
-                  className="relative size-16 overflow-hidden rounded-full p-[3px] shadow-[0_8px_25px_rgba(0,0,0,0.25)] sm:size-20"
+                  className="motion-avatar-smooth relative size-16 overflow-hidden rounded-full p-[3px] shadow-[0_8px_25px_rgba(0,0,0,0.25)] sm:size-20"
                   style={{ zIndex: 3 - index }}
                   animate={{ y: [0, -9 - index * 2, 0] }}
                   transition={{
@@ -273,7 +312,17 @@ export default function StayRelevant() {
                     ease: "easeInOut",
                     delay: index * 0.28,
                   }}
-                  whileHover={{ y: -14, scale: 1.08, zIndex: 10 }}
+                  whileHover={{
+                    y: -11,
+                    scale: 1.065,
+                    zIndex: 10,
+                    transition: {
+                      type: "spring",
+                      stiffness: 155,
+                      damping: 21,
+                      mass: 0.8,
+                    },
+                  }}
                 >
                   <motion.span
                     aria-hidden="true"

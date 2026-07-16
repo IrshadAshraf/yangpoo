@@ -1,7 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Plus } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Mail,
+  MessageCircleMore,
+  Phone,
+  Plus,
+} from "lucide-react";
 import { useState } from "react";
-import { HashLink } from "react-router-hash-link";
+import AnimatedButton from "@/components/ui/AnimatedButton";
+import ProjectDialog from "@/components/ui/ProjectDialog";
 
 const faqs = [
   {
@@ -52,7 +60,6 @@ const fillClasses = {
 function FAQItem({ faq, index, isOpen, onToggle }) {
   return (
     <motion.div
-      layout
       className="relative"
       initial={{ opacity: 0, x: index % 2 === 0 ? 55 : -55, y: 20 }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
@@ -62,7 +69,16 @@ function FAQItem({ faq, index, isOpen, onToggle }) {
       <div className="relative z-10 flex items-start gap-3 sm:gap-5">
         <motion.div
           className="group relative min-w-0 flex-1 overflow-hidden rounded-[28px] bg-[#1558a5]"
-          whileHover={{ y: -4, boxShadow: "0 14px 34px rgba(12,82,159,.2)" }}
+          whileHover={{
+            y: -3,
+            boxShadow: "0 14px 34px rgba(12,82,159,.2)",
+            transition: {
+              type: "spring",
+              stiffness: 155,
+              damping: 23,
+              mass: 0.85,
+            },
+          }}
           transition={{ layout: { duration: 0.38, ease: [0.22, 1, 0.36, 1] } }}
         >
           <motion.span
@@ -81,25 +97,29 @@ function FAQItem({ faq, index, isOpen, onToggle }) {
                 "inset 0 0 0 rgba(125,211,252,0)",
               ],
             }}
-            transition={{ duration: 4.5 + index * 0.3, repeat: Infinity, ease: "easeInOut" }}
+            transition={{
+              duration: 4.5 + index * 0.3,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
           />
           <span
             className={`pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,#0b3d75,#4f46c7,#1597c8)] transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)] ${fillClasses[faq.fill]}`}
           />
-          <button
+          <AnimatedButton
             type="button"
             onClick={onToggle}
             aria-expanded={isOpen}
             className="relative z-10 flex w-full items-center px-5 py-6 text-left text-base font-medium text-white sm:px-10 sm:py-8 sm:text-xl lg:text-2xl"
           >
             {faq.question}
-          </button>
+          </AnimatedButton>
         </motion.div>
 
         <div className="mt-3 size-12 shrink-0 sm:mt-4 sm:size-16">
           <AnimatePresence initial={false}>
             {!isOpen && (
-              <motion.button
+              <AnimatedButton
                 type="button"
                 onClick={onToggle}
                 aria-label="Open answer"
@@ -107,26 +127,52 @@ function FAQItem({ faq, index, isOpen, onToggle }) {
                 initial={{ opacity: 0, scale: 0.6, rotate: -45 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 exit={{ opacity: 0, scale: 0.6, rotate: 45 }}
-                whileHover={{ scale: 1.12, backgroundColor: "#bfdbfe" }}
+                whileHover={{
+                  scale: 1.08,
+                  backgroundColor: "#bfdbfe",
+                  transition: {
+                    type: "spring",
+                    stiffness: 170,
+                    damping: 22,
+                    mass: 0.75,
+                  },
+                }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 320, damping: 22 }}
               >
                 <Plus className="size-6 sm:size-8" strokeWidth={3} />
-              </motion.button>
+              </AnimatedButton>
             )}
           </AnimatePresence>
         </div>
       </div>
 
-      <AnimatePresence initial={false}>
-        {isOpen && (
+      <motion.div
+        initial={false}
+        animate={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+        transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
+        aria-hidden={!isOpen}
+        className="relative z-20 grid overflow-hidden"
+        style={{ pointerEvents: isOpen ? "auto" : "none" }}
+      >
+        <div className="min-h-0 overflow-hidden">
           <motion.div
-            layout
-            initial={{ height: 0, opacity: 0, y: -18 }}
-            animate={{ height: "auto", opacity: 1, y: 0 }}
-            exit={{ height: 0, opacity: 0, y: -14 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-20 -mt-4 overflow-hidden"
+            initial={false}
+            animate={{
+              opacity: isOpen ? 1 : 0,
+              y: isOpen ? 0 : -12,
+              scale: isOpen ? 1 : 0.99,
+            }}
+            transition={{
+              opacity: {
+                duration: isOpen ? 0.4 : 0.2,
+                delay: isOpen ? 0.08 : 0,
+                ease: "easeOut",
+              },
+              y: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+              scale: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+            }}
+            className="relative -mt-4 overflow-hidden"
           >
             <div className="relative overflow-hidden rounded-[18px] p-[2px] shadow-[0_8px_24px_rgba(15,23,42,.06)]">
               <motion.span
@@ -140,16 +186,15 @@ function FAQItem({ faq, index, isOpen, onToggle }) {
               </div>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
 
 export default function FAQs() {
   const [openIndex, setOpenIndex] = useState(0);
-  const [showAll, setShowAll] = useState(false);
-  const visibleFaqs = showAll ? faqs : faqs.slice(0, 4);
+  const visibleFaqs = faqs.slice(0, 4);
 
   return (
     <section className="relative overflow-hidden bg-white py-20 sm:py-24 lg:py-28">
@@ -167,7 +212,7 @@ export default function FAQs() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <h2 className="max-w-[390px] text-[44px] font-medium leading-[1.08] tracking-[-0.045em] text-[#141b2d] sm:text-[58px] lg:text-[64px]">
+          <h2 className="max-w-[390px] text-[40px] font-medium leading-[1.08] tracking-[-0.045em] text-[#141b2d] sm:text-[50px] lg:text-[60px]">
             Frequently Asked Questions
           </h2>
           <p className="mt-5 max-w-[360px] text-base leading-7 text-slate-700 sm:text-lg">
@@ -175,21 +220,91 @@ export default function FAQs() {
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3 sm:mt-14 sm:gap-4">
-            <HashLink
-              smooth
-              to="/#contact"
-              className="rounded-full bg-[#1558a5] px-7 py-3.5 font-medium text-white transition hover:-translate-y-1 hover:bg-[#0C529F] hover:shadow-[0_10px_25px_rgba(12,82,159,.25)] sm:px-10 sm:py-4"
+            <ProjectDialog
+              eyebrow="Contact support"
+              title="Still have a question? Let’s solve it together"
+              description="Our education advisors can help with program selection, eligibility, fees, schedules, applications, and enrollment support."
+              trigger={({ openDialog }) => (
+                <AnimatedButton
+                  type="button"
+                  onClick={openDialog}
+                  className="rounded-full bg-[#1558a5] px-7 py-3.5 font-medium text-white transition hover:-translate-y-1 hover:bg-[#0C529F] hover:shadow-[0_10px_25px_rgba(12,82,159,.25)] sm:px-10 sm:py-4"
+                >
+                  Contact Us
+                </AnimatedButton>
+              )}
             >
-              Contact Us
-            </HashLink>
-            <button
-              type="button"
-              onClick={() => setShowAll((current) => !current)}
-              className="group inline-flex items-center gap-2 rounded-full border border-[#1558a5] bg-white px-6 py-3.5 font-medium text-[#1558a5] transition hover:-translate-y-1 hover:bg-[#1558a5] hover:text-white hover:shadow-[0_10px_25px_rgba(12,82,159,.18)] sm:px-8 sm:py-4"
+              {({ closeDialog }) => (
+                <div>
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {[
+                      [MessageCircleMore, "Personal advice", "Discuss your goals with an education advisor."],
+                      [Phone, "Consultation", "Get clear answers about eligibility and enrollment."],
+                      [Mail, "Follow-up support", "Receive the information needed for your next step."],
+                    ].map(([Icon, title, copy]) => (
+                      <div key={title} className="min-w-0 rounded-2xl border border-sky-100 bg-white/80 p-4 shadow-sm">
+                        <Icon className="size-5 text-[#0C529F]" />
+                        <h3 className="mt-3 text-sm font-bold text-[#151d31]">{title}</h3>
+                        <p className="mt-1 break-words text-xs leading-5 text-slate-600">{copy}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-5 rounded-2xl bg-[#0C529F]/5 p-5 text-sm text-slate-700">
+                    <p className="flex items-center gap-2"><CheckCircle2 className="size-4 shrink-0 text-[#0C529F]" /> Personalized and obligation-free guidance</p>
+                    <p className="mt-2 flex items-center gap-2"><CheckCircle2 className="size-4 shrink-0 text-[#0C529F]" /> Support throughout your application journey</p>
+                  </div>
+                  <AnimatedButton smooth to="/#contact" onClick={closeDialog} className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#0C529F] px-6 py-3 text-sm font-semibold text-white">
+                    Contact an advisor <ArrowRight size={17} />
+                  </AnimatedButton>
+                </div>
+              )}
+            </ProjectDialog>
+
+            <ProjectDialog
+              eyebrow="FAQ library"
+              title="Everything learners commonly ask"
+              description="Browse the complete collection of quick answers about programs, recognition, online study, admissions, and payment options."
+              trigger={({ openDialog }) => (
+                <AnimatedButton
+                  type="button"
+                  onClick={openDialog}
+                  className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#1558a5] bg-white px-6 py-3.5 font-medium text-[#1558a5] transition hover:-translate-y-1 hover:bg-[#1558a5] hover:text-white hover:shadow-[0_10px_25px_rgba(12,82,159,.18)] sm:px-8 sm:py-4"
+                >
+                  View All FAQs
+                  <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
+                </AnimatedButton>
+              )}
             >
-              {showAll ? "Show Fewer" : "View All FAQs"}
-              <ArrowRight size={17} className={`transition-transform ${showAll ? "rotate-[-90deg]" : "group-hover:translate-x-1"}`} />
-            </button>
+              {({ closeDialog }) => (
+                <div>
+                  <div className="space-y-3">
+                    {faqs.map((faq, index) => (
+                      <motion.div
+                        key={faq.question}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.055 }}
+                        className="rounded-2xl border border-sky-100 bg-white/80 p-4 shadow-sm sm:p-5"
+                      >
+                        <h3 className="flex gap-3 font-bold text-[#151d31]">
+                          <span className="text-[#0C529F]">{String(index + 1).padStart(2, "0")}</span>
+                          <span>{faq.question}</span>
+                        </h3>
+                        <p className="mt-2 pl-8 text-sm leading-6 text-slate-600">{faq.answer}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <div className="mt-6 flex flex-wrap items-center gap-3">
+                    <AnimatedButton smooth to="/#contact" onClick={closeDialog} className="inline-flex items-center gap-2 rounded-full bg-[#0C529F] px-6 py-3 text-sm font-semibold text-white">
+                      Ask another question <ArrowRight size={17} />
+                    </AnimatedButton>
+                    <AnimatedButton type="button" onClick={closeDialog} className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700">
+                      Continue browsing
+                    </AnimatedButton>
+                  </div>
+                </div>
+              )}
+            </ProjectDialog>
           </div>
         </motion.div>
 
@@ -201,7 +316,9 @@ export default function FAQs() {
                 faq={faq}
                 index={index}
                 isOpen={openIndex === index}
-                onToggle={() => setOpenIndex((current) => (current === index ? -1 : index))}
+                onToggle={() =>
+                  setOpenIndex((current) => (current === index ? -1 : index))
+                }
               />
             ))}
           </AnimatePresence>

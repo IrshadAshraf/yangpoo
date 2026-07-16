@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  CheckCircle2,
   CircleDollarSign,
   CirclePlay,
   Folder,
   UserRound,
 } from "lucide-react";
-import { HashLink } from "react-router-hash-link";
+import AnimatedButton from "@/components/ui/AnimatedButton";
+import ProjectDialog from "@/components/ui/ProjectDialog";
 import loungeStudents from "@/assets/courses/0d3c7b0d1c5acb12d79f7b6f31ad36bbac2149ec.png";
 import laptopStudents from "@/assets/courses/297094b0d5e40e381d6f63110ffc26eb9a962997.png";
 import campusStudents from "@/assets/courses/2e58e00ceaf2209c77f9659ac4fb98f4e36edd0f.png";
@@ -79,7 +81,17 @@ function CourseCard({ course, index }) {
       className="min-w-0"
     >
       <motion.article
-        className="group relative h-full overflow-hidden rounded-[22px] p-[2px] shadow-[0_10px_28px_rgba(20,31,61,0.12)]"
+        className="motion-card-smooth group relative h-full overflow-hidden rounded-[22px] p-[2px] shadow-[0_10px_28px_rgba(20,31,61,0.12)]"
+        whileHover={{
+          y: -7,
+          scale: 1.008,
+          transition: {
+            type: "spring",
+            stiffness: 165,
+            damping: 23,
+            mass: 0.9,
+          },
+        }}
       >
         <motion.span
           aria-hidden="true"
@@ -92,12 +104,10 @@ function CourseCard({ course, index }) {
           }}
         />
 
-        <div className="relative flex h-full flex-col rounded-[20px] bg-white p-2 sm:p-3 lg:p-4">
+        <div className="motion-card-fill relative flex h-full flex-col rounded-[20px] bg-white p-2 sm:p-3 lg:p-4">
           <div className="aspect-[3/2] overflow-hidden rounded-[13px] sm:rounded-[16px]">
-            <motion.img
-              src={course.image}
-              alt={course.title}
-              className="h-full w-full object-cover"
+            <motion.div
+              className="h-full w-full"
               animate={{ y: [0, -6, 0], scale: [1.03, 1.07, 1.03] }}
               transition={{
                 duration: 4 + index * 0.25,
@@ -105,8 +115,22 @@ function CourseCard({ course, index }) {
                 ease: "easeInOut",
                 delay: index * 0.22,
               }}
-              whileHover={{ scale: 1.11 }}
-            />
+            >
+              <motion.img
+                src={course.image}
+                alt={course.title}
+                className="h-full w-full object-cover"
+                whileHover={{
+                  scale: 1.04,
+                  transition: {
+                    type: "spring",
+                    stiffness: 135,
+                    damping: 24,
+                    mass: 0.95,
+                  },
+                }}
+              />
+            </motion.div>
           </div>
 
           <div className="flex items-center justify-between gap-1 py-2 text-[8px] sm:py-3 sm:text-xs lg:text-sm">
@@ -138,14 +162,57 @@ function CourseCard({ course, index }) {
             </span>
           </div>
 
-          <HashLink
-            smooth
-            to="/#contact"
-            className="mt-3 flex items-center justify-center gap-2 rounded-full bg-[#1558a5] px-2 py-2.5 text-[10px] font-semibold text-white transition hover:bg-[#0C529F] hover:shadow-[0_8px_24px_rgba(12,82,159,.3)] sm:mt-5 sm:py-3 sm:text-sm lg:text-base"
+          <ProjectDialog
+            eyebrow="Course details"
+            title={course.title}
+            description="Review the key course information before speaking with an education advisor about eligibility, schedules, and enrollment."
+            trigger={({ openDialog }) => (
+              <AnimatedButton
+                type="button"
+                onClick={openDialog}
+                className="mt-3 flex items-center justify-center gap-2 rounded-full bg-[#1558a5] px-2 py-2.5 text-[10px] font-semibold text-white transition hover:bg-[#0C529F] hover:shadow-[0_8px_24px_rgba(12,82,159,.3)] sm:mt-5 sm:py-3 sm:text-sm lg:text-base"
+              >
+                Course details
+                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1.5 sm:size-4" />
+              </AnimatedButton>
+            )}
           >
-            Course details
-            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1.5 sm:size-4" />
-          </HashLink>
+            {({ closeDialog }) => (
+              <div>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {[
+                    ["Rating", course.rating],
+                    ["Lessons", String(course.lessons)],
+                    ["Learners", course.students],
+                    ["Tuition", course.price],
+                  ].map(([label, value]) => (
+                    <div key={label} className="rounded-2xl border border-sky-100 bg-white/80 p-4 text-center shadow-sm">
+                      <p className="text-xs font-medium uppercase tracking-wider text-slate-500">{label}</p>
+                      <p className="mt-1 text-base font-bold text-[#151d31]">{value}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-5 rounded-2xl bg-[#0C529F]/5 p-5">
+                  <h3 className="font-bold text-[#151d31]">What you can expect</h3>
+                  <ul className="mt-3 grid gap-2 text-sm text-slate-700 sm:grid-cols-2">
+                    {["Flexible online access", "Advisor-led enrollment support", "Industry-relevant curriculum", "A recognized learning pathway"].map((item) => (
+                      <li key={item} className="flex items-center gap-2">
+                        <CheckCircle2 className="size-4 shrink-0 text-[#0C529F]" /> {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <AnimatedButton
+                  smooth
+                  to="/#contact"
+                  onClick={closeDialog}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#0C529F] px-6 py-3 text-sm font-semibold text-white"
+                >
+                  Talk to an advisor <ArrowRight size={17} />
+                </AnimatedButton>
+              </div>
+            )}
+          </ProjectDialog>
         </div>
       </motion.article>
     </motion.div>
@@ -191,7 +258,7 @@ export default function Courses() {
             </span>
           </motion.div>
 
-          <h2 className="mt-6 text-[34px] font-bold leading-[1.15] tracking-[-0.045em] text-black sm:text-[48px] lg:text-[54px]">
+          <h2 className="mt-6 text-[26px] font-semibold leading-[1.15] tracking-[-0.045em] text-black sm:text-[40px] lg:text-[50px]">
             Our Cutting-Edge Programs from World&apos;s Leading Universities
           </h2>
         </motion.div>

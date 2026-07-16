@@ -10,6 +10,7 @@ import avatarFour from "@/assets/testimonials/7f2ac885795f6299294c794c6b72d82475
 import avatarFive from "@/assets/testimonials/859a7c2fc5a3c1a19fbe7c224f90d29f1daa9420.png";
 import avatarSix from "@/assets/testimonials/d725ebfeeb48bfa0819aa48638aced9515549e2e.png";
 import avatarSeven from "@/assets/testimonials/d7e95338d3000c26275ff6bf57fe5f4df249aaa6.png";
+import AnimatedButton from "@/components/ui/AnimatedButton";
 
 const testimonials = [
   {
@@ -75,9 +76,9 @@ const revealAnimations = [
 function AnimatedAvatar({ src, name }) {
   return (
     <motion.div
-      className="relative size-10 shrink-0 overflow-hidden rounded-full p-[2px] shadow-[0_5px_14px_rgba(12,82,159,.18)]"
-      whileHover={{ y: -6, scale: 1.18, rotate: 8 }}
-      transition={{ type: "spring", stiffness: 360, damping: 18 }}
+      className="motion-avatar-smooth relative size-10 shrink-0 overflow-hidden rounded-full p-[2px] shadow-[0_5px_14px_rgba(12,82,159,.18)]"
+      whileHover={{ y: -4, scale: 1.12, rotate: 4 }}
+      transition={{ type: "spring", stiffness: 165, damping: 21, mass: 0.8 }}
     >
       <motion.span
         aria-hidden="true"
@@ -90,7 +91,7 @@ function AnimatedAvatar({ src, name }) {
           src={src}
           alt={name}
           className="h-full w-full rounded-full object-cover"
-          whileHover={{ scale: 1.12 }}
+          whileHover={{ scale: 1.07 }}
         />
       </span>
     </motion.div>
@@ -110,16 +111,29 @@ function TestimonialCard({ testimonial, index, carousel = false }) {
 
   return (
     <motion.article
-      layout={carousel ? "size" : false}
-      className="group relative overflow-hidden rounded-[24px] bg-slate-100 p-2 shadow-[0_6px_20px_rgba(15,23,42,0.06)] [transform-style:preserve-3d]"
+      layout={false}
+      className={`motion-card-smooth group relative overflow-hidden rounded-[24px] bg-slate-100 p-2 shadow-[0_6px_20px_rgba(15,23,42,0.06)] [transform-style:preserve-3d] ${carousel ? "h-[280px] sm:h-[230px]" : ""}`}
       initial={carousel ? false : { opacity: 0, scale: 0.9, ...reveal }}
       whileInView={
         carousel ? undefined : { opacity: 1, scale: 1, x: 0, y: 0, rotate: 0 }
       }
       viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.7, delay: index * 0.08, ease: "easeOut" }}
+      transition={{
+        layout: { type: "spring", stiffness: 150, damping: 23, mass: 0.9 },
+        opacity: { duration: 0.7, delay: index * 0.08, ease: "easeOut" },
+        scale: { duration: 0.7, delay: index * 0.08, ease: "easeOut" },
+        x: { duration: 0.7, delay: index * 0.08, ease: "easeOut" },
+        y: { type: "spring", stiffness: 155, damping: 23, mass: 0.9 },
+        rotate: { duration: 0.7, delay: index * 0.08, ease: "easeOut" },
+        rotateX: { type: "spring", stiffness: 115, damping: 20, mass: 0.8 },
+        rotateY: { type: "spring", stiffness: 115, damping: 20, mass: 0.8 },
+      }}
       animate={{ rotateX: tilt.x, rotateY: tilt.y }}
-      whileHover={{ y: -8, scale: 1.025 }}
+      whileHover={{
+        y: -6,
+        scale: 1.015,
+        transition: { type: "spring", stiffness: 155, damping: 23, mass: 0.9 },
+      }}
       onMouseMove={handlePointerMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
       style={{ transformPerspective: 900 }}
@@ -138,12 +152,27 @@ function TestimonialCard({ testimonial, index, carousel = false }) {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-20 rounded-[24px] border border-slate-200"
         animate={{
-          borderColor: ["rgba(226,232,240,.4)", "rgba(125,211,252,.33)", "rgba(196,181,253,.28)", "rgba(226,232,240,.4)"],
-          boxShadow: ["0 0 0 rgba(12,82,159,0)", "0 0 15px rgba(12,82,159,.04)", "0 0 0 rgba(12,82,159,0)"],
+          borderColor: [
+            "rgba(226,232,240,.4)",
+            "rgba(125,211,252,.33)",
+            "rgba(196,181,253,.28)",
+            "rgba(226,232,240,.4)",
+          ],
+          boxShadow: [
+            "0 0 0 rgba(12,82,159,0)",
+            "0 0 15px rgba(12,82,159,.04)",
+            "0 0 0 rgba(12,82,159,0)",
+          ],
         }}
-        transition={{ duration: 4.5 + index * 0.2, repeat: Infinity, ease: "easeInOut" }}
+        transition={{
+          duration: 4.5 + index * 0.2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       />
-      <div className="relative flex min-h-[160px] flex-col overflow-hidden rounded-[18px] bg-white px-5 py-5 sm:min-h-[175px] sm:px-6">
+      <div
+        className={`relative flex flex-col overflow-hidden rounded-[18px] bg-white px-5 py-5 sm:px-6 ${carousel ? "h-full min-h-0" : "min-h-[160px] sm:min-h-[175px]"}`}
+      >
         <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,#0b3e78_0%,#0C529F_42%,#5b4fc7_100%)] opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100" />
         <span className="pointer-events-none absolute -right-16 -top-16 size-40 rounded-full bg-cyan-300/25 blur-2xl opacity-0 transition-all duration-700 group-hover:translate-x-[-18px] group-hover:translate-y-[18px] group-hover:opacity-100" />
         <span className="pointer-events-none absolute -bottom-20 -left-16 size-44 rounded-full bg-violet-300/20 blur-2xl opacity-0 transition-all duration-700 group-hover:translate-x-[20px] group-hover:translate-y-[-14px] group-hover:opacity-100" />
@@ -169,7 +198,7 @@ function TestimonialCard({ testimonial, index, carousel = false }) {
 function ImageCard({ src, alt, index, className = "" }) {
   return (
     <motion.div
-      className={`relative overflow-hidden rounded-[26px] p-[2px] shadow-[0_10px_30px_rgba(15,23,42,0.1)] ${className}`}
+      className={`motion-card-smooth relative aspect-square w-full overflow-hidden rounded-[26px] p-[2px] shadow-[0_10px_30px_rgba(15,23,42,0.1)] ${className}`}
       initial={{ opacity: 0, scale: 0.88, rotate: index ? 3 : -3 }}
       whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
       viewport={{ once: true, amount: 0.25 }}
@@ -186,12 +215,77 @@ function ImageCard({ src, alt, index, className = "" }) {
           src={src}
           alt={alt}
           className="h-full w-full rounded-[21px] object-cover"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.55 }}
+          whileHover={{ scale: 1.045 }}
+          transition={{
+            type: "spring",
+            stiffness: 145,
+            damping: 22,
+            mass: 0.9,
+          }}
         />
+        {index === 0 ? (
+          <>
+            <motion.span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-10 rounded-[21px] bg-[linear-gradient(135deg,rgba(56,189,248,.2),transparent_35%,rgba(99,102,241,.17)_72%,transparent)] mix-blend-screen"
+              animate={{ opacity: [0.3, 0.72, 0.38, 0.3] }}
+              transition={{
+                duration: 5.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.span
+              aria-hidden="true"
+              className="pointer-events-none absolute -inset-y-16 -left-1/2 z-10 w-[42%] skew-x-[-18deg] bg-gradient-to-r from-transparent via-white/25 to-transparent blur-sm"
+              animate={{ x: ["0%", "430%"] }}
+              transition={{
+                duration: 3.4,
+                repeat: Infinity,
+                repeatDelay: 2.8,
+                ease: "easeInOut",
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <motion.span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-10 rounded-[21px] bg-[radial-gradient(circle_at_72%_18%,rgba(255,255,255,.3),transparent_30%),linear-gradient(155deg,transparent_35%,rgba(168,85,247,.17)_72%,rgba(14,165,233,.13))] mix-blend-screen"
+              animate={{ opacity: [0.4, 0.75, 0.45, 0.4] }}
+              transition={{
+                duration: 6.2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.span
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-[22%] -top-[18%] z-10 size-[58%] rounded-full border border-white/25 bg-white/10 backdrop-blur-[2px]"
+              animate={{
+                x: [0, -18, 5, 0],
+                y: [0, 20, 8, 0],
+                scale: [0.92, 1.06, 0.97, 0.92],
+              }}
+              transition={{
+                duration: 7.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          </>
+        )}
         <motion.span
-          className="absolute bottom-5 right-5 grid size-10 place-items-center rounded-full bg-[#132339]/90 text-white shadow-lg"
-          whileHover={{ scale: 1.15 }}
+          className="absolute bottom-5 right-5 z-20 grid size-10 place-items-center rounded-full bg-[#132339]/90 text-white shadow-lg"
+          whileHover={{
+            scale: 1.1,
+            transition: {
+              type: "spring",
+              stiffness: 155,
+              damping: 21,
+              mass: 0.8,
+            },
+          }}
         >
           <CirclePlay size={18} fill="white" />
         </motion.span>
@@ -251,7 +345,7 @@ export default function Testimonials() {
               <Folder size={15} fill="currentColor" /> Testimonials
             </span>
           </motion.div>
-          <h2 className="mt-5 text-[38px] font-bold tracking-[-0.04em] text-[#151c2e] sm:text-[50px] lg:text-[56px]">
+          <h2 className="mt-5 text-[30px] font-semibold tracking-[-0.04em] text-[#151c2e] sm:text-[40px] lg:text-[50px]">
             Student Success Stories
           </h2>
         </motion.div>
@@ -259,12 +353,7 @@ export default function Testimonials() {
         <div className="mx-auto mt-14 hidden max-w-[1300px] grid-cols-3 gap-6 lg:grid">
           <div className="flex flex-col gap-6">
             <TestimonialCard testimonial={testimonials[0]} index={0} />
-            <ImageCard
-              src={portraitOne}
-              alt="Successful graduate"
-              index={0}
-              className="h-[340px]"
-            />
+            <ImageCard src={portraitOne} alt="Successful graduate" index={0} />
             <TestimonialCard testimonial={testimonials[4]} index={4} />
           </div>
           <div className="flex flex-col gap-6">
@@ -277,7 +366,6 @@ export default function Testimonials() {
               src={portraitTwo}
               alt="Award-winning graduate"
               index={1}
-              className="h-[340px]"
             />
             <TestimonialCard testimonial={testimonials[3]} index={3} />
             <TestimonialCard testimonial={testimonials[6]} index={6} />
@@ -285,22 +373,17 @@ export default function Testimonials() {
         </div>
 
         <div className="mx-auto mt-12 max-w-[560px] lg:hidden">
-          <ImageCard
-            src={portraitOne}
-            alt="Successful graduate"
-            index={0}
-            className="h-[390px] sm:h-[480px]"
-          />
+          <ImageCard src={portraitOne} alt="Successful graduate" index={0} />
 
-          <motion.div
-            layout="size"
-            className="relative mt-8 overflow-hidden py-3 [perspective:1000px]"
-            transition={{ layout: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } }}
-          >
-            <AnimatePresence mode="popLayout" custom={direction} initial={false}>
+          <div className="relative mt-8 h-[304px] overflow-hidden py-3 [perspective:1000px] sm:h-[254px]">
+            <AnimatePresence
+              mode="popLayout"
+              custom={direction}
+              initial={false}
+            >
               <motion.div
                 key={activeIndex}
-                layout="size"
+                className="h-full"
                 custom={direction}
                 initial={{
                   x: direction > 0 ? 90 : -90,
@@ -329,20 +412,20 @@ export default function Testimonials() {
                 />
               </motion.div>
             </AnimatePresence>
-          </motion.div>
+          </div>
 
           <div className="mt-4 flex items-center justify-between">
-            <button
+            <AnimatedButton
               type="button"
               onClick={() => changeSlide(-1)}
               className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-[#0C529F] shadow-sm transition hover:bg-[#0C529F] hover:text-white"
               aria-label="Previous testimonial"
             >
               <ArrowLeft size={19} />
-            </button>
+            </AnimatedButton>
             <div className="flex gap-2">
               {testimonials.map((testimonial, index) => (
-                <button
+                <AnimatedButton
                   key={`${testimonial.name}-${index}`}
                   type="button"
                   onClick={() => {
@@ -354,21 +437,21 @@ export default function Testimonials() {
                 />
               ))}
             </div>
-            <button
+            <AnimatedButton
               type="button"
               onClick={() => changeSlide(1)}
               className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-[#0C529F] shadow-sm transition hover:bg-[#0C529F] hover:text-white"
               aria-label="Next testimonial"
             >
               <ArrowRight size={19} />
-            </button>
+            </AnimatedButton>
           </div>
 
           <ImageCard
             src={portraitTwo}
             alt="Award-winning graduate"
             index={1}
-            className="mt-10 h-[390px] sm:h-[480px]"
+            className="mt-10"
           />
         </div>
       </div>

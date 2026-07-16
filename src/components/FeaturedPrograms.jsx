@@ -1,5 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Award,
+  BriefcaseBusiness,
+  Clock3,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { HashLink } from "react-router-hash-link";
 import briefcaseIcon from "@/assets/featured programs/Vector (10).png";
@@ -7,6 +13,8 @@ import executiveIcon from "@/assets/featured programs/Vector (11).png";
 import certificationIcon from "@/assets/featured programs/Vector (12).png";
 import degreeIcon from "@/assets/featured programs/Vector (13).png";
 import featuredIcon from "@/assets/featured programs/Vector (14).png";
+import AnimatedButton from "@/components/ui/AnimatedButton";
+import ProjectDialog from "@/components/ui/ProjectDialog";
 
 const programs = [
   {
@@ -54,7 +62,7 @@ const slideVariants = {
 function ProgramCard({ program, index = 0, floating = false }) {
   return (
     <motion.article
-      className="group relative h-full overflow-hidden rounded-[24px] p-[2px] shadow-[0_12px_32px_rgba(20,31,61,0.12)]"
+      className="relative h-full"
       animate={floating ? { y: [0, -10, 0] } : undefined}
       transition={
         floating
@@ -66,46 +74,100 @@ function ProgramCard({ program, index = 0, floating = false }) {
             }
           : undefined
       }
-      whileHover={{ y: -12, scale: 1.018 }}
     >
-      <motion.span
-        aria-hidden="true"
-        className="absolute -inset-[95%] bg-[conic-gradient(from_0deg,transparent_8%,#7dd3fc_21%,#0C529F_34%,transparent_48%)]"
-        animate={{ rotate: 360 }}
-        transition={{
-          duration: 5 + index * 0.5,
-          repeat: Infinity,
-          ease: "linear",
+      <motion.div
+        className="motion-card-smooth group relative h-full overflow-hidden rounded-[24px] p-[2px] shadow-[0_12px_32px_rgba(20,31,61,0.12)]"
+        whileHover={{
+          y: -7,
+          scale: 1.01,
+          boxShadow: "0 20px 45px rgba(20,31,61,0.16)",
+          transition: {
+            type: "spring",
+            stiffness: 135,
+            damping: 24,
+            mass: 0.95,
+          },
         }}
-      />
-      <div className="relative flex h-full min-h-[350px] flex-col rounded-[22px] bg-white px-8 py-10 sm:px-10">
-        <motion.div
-          className="grid size-16 place-items-center rounded-2xl bg-[#1558a5] shadow-[0_10px_25px_rgba(12,82,159,0.22)]"
-          whileHover={{ rotate: [0, -8, 8, 0], scale: 1.08 }}
-          transition={{ duration: 0.45 }}
-        >
-          <img src={program.icon} alt="" className="size-8 object-contain" />
-        </motion.div>
+      >
+        <motion.span
+          aria-hidden="true"
+          className="absolute -inset-[95%] bg-[conic-gradient(from_0deg,transparent_8%,#7dd3fc_21%,#0C529F_34%,transparent_48%)]"
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 5 + index * 0.5,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+        <div className="motion-card-fill relative flex h-full min-h-[350px] flex-col rounded-[22px] bg-white px-8 py-10 sm:px-10">
+          <motion.div
+            className="grid size-16 place-items-center rounded-2xl bg-[#1558a5] shadow-[0_10px_25px_rgba(12,82,159,0.22)]"
+            whileHover={{ rotate: [0, -3, 3, 0], scale: 1.045 }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <img src={program.icon} alt="" className="size-8 object-contain" />
+          </motion.div>
 
-        <h3 className="mt-7 text-[22px] font-bold leading-[1.3] tracking-[-0.02em] text-[#171e31]">
-          {program.title}
-        </h3>
-        <p className="mt-4 text-[15px] leading-6 text-slate-600">
-          {program.description}
-        </p>
+          <h3 className="mt-7 text-[22px] font-bold leading-[1.3] tracking-[-0.02em] text-[#171e31]">
+            {program.title}
+          </h3>
+          <p className="mt-4 text-[15px] leading-6 text-slate-600">
+            {program.description}
+          </p>
 
-        <HashLink
-          smooth
-          to="/#courses"
-          className="mt-auto inline-flex w-fit items-center gap-3 pt-7 text-sm font-semibold text-[#0C529F]"
-        >
-          Learn More
-          <ArrowRight
-            size={17}
-            className="transition-transform group-hover:translate-x-1.5"
-          />
-        </HashLink>
-      </div>
+          <ProjectDialog
+            eyebrow="Featured program"
+            title={program.title}
+            description={program.description}
+            trigger={({ openDialog }) => (
+              <HashLink
+                smooth
+                to="/#courses"
+                onClick={(event) => {
+                  event.preventDefault();
+                  openDialog();
+                }}
+                className="mt-auto inline-flex w-fit items-center gap-3 pt-7 text-sm font-semibold text-[#0C529F]"
+              >
+                Learn More
+                <ArrowRight size={17} />
+              </HashLink>
+            )}
+          >
+            {({ closeDialog }) => (
+              <div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {[
+                    [Clock3, "Flexible format", "Learn around your current schedule."],
+                    [Award, "Recognized learning", "Build credentials with trusted institutions."],
+                    [BriefcaseBusiness, "Career focused", "Apply practical skills to real-world goals."],
+                  ].map(([Icon, label, copy]) => (
+                    <div
+                      key={label}
+                      className="rounded-2xl border border-[#0C529F]/10 bg-white/75 p-4 shadow-[0_10px_28px_rgba(12,82,159,.07)]"
+                    >
+                      <Icon className="size-5 text-[#0C529F]" />
+                      <h3 className="mt-3 text-sm font-bold text-[#171e31]">{label}</h3>
+                      <p className="mt-1 text-xs leading-5 text-slate-600">{copy}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-5 rounded-2xl border-l-4 border-[#0C529F] bg-[#0C529F]/5 px-5 py-4 text-sm leading-6 text-slate-700">
+                  Compare available courses, learning formats, and university partners to find the pathway that best matches your ambitions.
+                </p>
+                <AnimatedButton
+                  smooth
+                  to="/#courses"
+                  onClick={closeDialog}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#0C529F] px-6 py-3 text-sm font-semibold text-white"
+                >
+                  Explore available courses <ArrowRight size={17} />
+                </AnimatedButton>
+              </div>
+            )}
+          </ProjectDialog>
+        </div>
+      </motion.div>
     </motion.article>
   );
 }
@@ -171,11 +233,15 @@ export default function FeaturedPrograms() {
               transition={{ duration: 3.2, repeat: Infinity, ease: "linear" }}
             />
             <span className="relative inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-900">
-              <img src={featuredIcon} alt="" className="size-4 object-contain" />
+              <img
+                src={featuredIcon}
+                alt=""
+                className="size-4 object-contain"
+              />
               Featured Program
             </span>
           </motion.div>
-          <h2 className="mt-5 text-[36px] font-bold leading-tight tracking-[-0.045em] text-[#141b2d] sm:text-[48px] lg:text-[54px]">
+          <h2 className="mt-5 text-[20px] font-bold leading-tight tracking-[-0.045em] text-[#141b2d] sm:text-[48px] ">
             Find the Right Program for You
           </h2>
           <p className="mx-auto mt-4 max-w-[650px] text-base leading-7 text-slate-600 sm:text-lg">
@@ -231,18 +297,18 @@ export default function FeaturedPrograms() {
           </div>
 
           <div className="mt-5 flex items-center justify-between gap-5">
-            <button
+            <AnimatedButton
               type="button"
               onClick={() => changeSlide(-1)}
               className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-[#0C529F] shadow-sm transition hover:border-[#0C529F] hover:bg-[#0C529F] hover:text-white"
               aria-label="Previous program"
             >
               <ArrowLeft size={19} />
-            </button>
+            </AnimatedButton>
 
             <div className="flex items-center gap-2">
               {programs.map((program, index) => (
-                <button
+                <AnimatedButton
                   key={program.title}
                   type="button"
                   onClick={() => goToSlide(index)}
@@ -258,18 +324,18 @@ export default function FeaturedPrograms() {
                       transition={{ duration: 3.2, ease: "linear" }}
                     />
                   )}
-                </button>
+                </AnimatedButton>
               ))}
             </div>
 
-            <button
+            <AnimatedButton
               type="button"
               onClick={() => changeSlide(1)}
               className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-[#0C529F] shadow-sm transition hover:border-[#0C529F] hover:bg-[#0C529F] hover:text-white"
               aria-label="Next program"
             >
               <ArrowRight size={19} />
-            </button>
+            </AnimatedButton>
           </div>
         </div>
       </div>

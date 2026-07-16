@@ -1,7 +1,16 @@
 import { motion, useInView } from "framer-motion";
-import { ArrowRight, BriefcaseBusiness, Folder } from "lucide-react";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  CheckCircle2,
+  Folder,
+  GraduationCap,
+  Handshake,
+  Target,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { HashLink } from "react-router-hash-link";
+import AnimatedButton from "@/components/ui/AnimatedButton";
+import ProjectDialog from "@/components/ui/ProjectDialog";
 import avatarOne from "@/assets/about us/close-up-portrait-curly-handsome-european-male_176532-8133.avif";
 import avatarTwo from "@/assets/about us/photo-1438761681033-6461ffad8d80.avif";
 import avatarThree from "@/assets/about us/photo-1654110455429-cf322b40a906.avif";
@@ -54,7 +63,7 @@ function LiveStudents() {
 function PortraitFrame({ className, image, alt, delay, borderClassName }) {
   return (
     <motion.div
-      className={`absolute ${className}`}
+      className={`motion-card-smooth absolute ${className}`}
       animate={{ y: [0, -10, 0] }}
       transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay }}
     >
@@ -132,7 +141,7 @@ export default function AboutUs() {
             />
 
             <motion.div
-              className="absolute left-[1%] top-[14%] z-20 w-[72%] overflow-hidden rounded-full p-[2px] shadow-[0_12px_35px_rgba(30,50,90,0.14)] sm:left-[6%] sm:w-[54%]"
+              className="motion-card-smooth absolute left-[1%] top-[14%] z-20 w-[72%] overflow-hidden rounded-full p-[2px] shadow-[0_12px_35px_rgba(30,50,90,0.14)] sm:left-[6%] sm:w-[54%]"
               initial={{ opacity: 0, x: -45 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -160,11 +169,9 @@ export default function AboutUs() {
                 </div>
                 <div className="flex shrink-0 -space-x-[7%]">
                   {avatars.map((avatar, index) => (
-                    <motion.img
+                    <motion.div
                       key={avatar}
-                      src={avatar}
-                      alt="Learner"
-                      className="aspect-square w-[clamp(22px,5.2vw,46px)] rounded-full border-2 border-white object-cover"
+                      className="relative aspect-square w-[clamp(22px,5.2vw,46px)] shrink-0 hover:z-10"
                       animate={{
                         y: [0, -6 - index, 0],
                         rotate: [0, index % 2 ? 3 : -3, 0],
@@ -175,8 +182,23 @@ export default function AboutUs() {
                         ease: "easeInOut",
                         delay: index * 0.2,
                       }}
-                      whileHover={{ y: -10, scale: 1.12, zIndex: 10 }}
-                    />
+                    >
+                      <motion.img
+                        src={avatar}
+                        alt="Learner"
+                        className="motion-avatar-smooth h-full w-full rounded-full border-2 border-white object-cover"
+                        whileHover={{
+                          y: -8,
+                          scale: 1.09,
+                          transition: {
+                            type: "spring",
+                            stiffness: 160,
+                            damping: 21,
+                            mass: 0.8,
+                          },
+                        }}
+                      />
+                    </motion.div>
                   ))}
                   <motion.span
                     className="relative z-10 grid aspect-square w-[clamp(22px,5.2vw,46px)] place-items-center rounded-full border-2 border-white bg-[#0C529F] text-[clamp(12px,2.5vw,20px)] text-white"
@@ -233,7 +255,7 @@ export default function AboutUs() {
             </span>
           </motion.div>
 
-          <h2 className="mt-5 max-w-[680px] text-[38px] font-bold leading-[1.15] tracking-[-0.045em] text-[#1c1c1d] sm:text-[52px] lg:text-[56px]">
+          <h2 className="mt-5 max-w-[680px] text-[30px] font-semibold leading-[1.15] tracking-[-0.045em] text-[#1c1c1d] md:text-[40px] lg:text-[45px] xl:text-[50px]">
             Your Trusted Partner in Higher Education
           </h2>
           <p className="mt-5 max-w-[680px] text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
@@ -244,7 +266,15 @@ export default function AboutUs() {
 
           <motion.div
             className="mt-6 flex items-start gap-4"
-            whileHover={{ x: 7 }}
+            whileHover={{
+              x: 6,
+              transition: {
+                type: "spring",
+                stiffness: 160,
+                damping: 23,
+                mass: 0.8,
+              },
+            }}
           >
             <motion.span
               className="grid size-12 shrink-0 place-items-center rounded-full bg-[#1558a5] text-white"
@@ -271,28 +301,109 @@ export default function AboutUs() {
           </motion.div>
 
           <motion.div
-            className="mt-7 rounded-2xl border-l-4 border-[#1558a5] bg-white px-6 py-5 font-semibold leading-6 text-[#292929] shadow-[0_8px_30px_rgba(15,23,42,0.06)] sm:px-9"
+            className="motion-card-fill motion-card-smooth mt-7 rounded-2xl border-l-4 border-[#1558a5] bg-white px-6 py-5 font-semibold leading-6 text-[#292929] shadow-[0_8px_30px_rgba(15,23,42,0.06)] sm:px-9"
             initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            whileHover={{ y: -5, boxShadow: "0 16px 35px rgba(12,82,159,.12)" }}
+            whileHover={{
+              y: -4,
+              boxShadow: "0 16px 35px rgba(12,82,159,.12)",
+              transition: {
+                type: "spring",
+                stiffness: 155,
+                damping: 23,
+                mass: 0.85,
+              },
+            }}
           >
             With strong university partnerships and learner-focused support, we
             make higher education more accessible, flexible, and
             career-oriented.
           </motion.div>
 
-          <HashLink
-            smooth
-            to="/#contact"
-            className="group mt-8 inline-flex items-center gap-3 rounded-full bg-[#1558a5] px-10 py-4 font-semibold text-white transition hover:bg-[#0C529F] hover:shadow-lg"
+          <ProjectDialog
+            eyebrow="About Yangpoo"
+            title="A trusted bridge between ambition and opportunity"
+            description="Yangpoo University Partners helps learners discover recognized, career-relevant education while making every stage of the decision and admission journey easier to navigate."
+            trigger={({ openDialog }) => (
+              <AnimatedButton
+                type="button"
+                onClick={openDialog}
+                className="group mt-8 inline-flex items-center gap-3 rounded-full bg-[#1558a5] px-10 py-4 font-semibold text-white transition hover:bg-[#0C529F] hover:shadow-lg cursor-pointer"
+              >
+                More About Us{" "}
+                <ArrowRight
+                  size={18}
+                  className="transition-transform group-hover:translate-x-1"
+                />
+              </AnimatedButton>
+            )}
           >
-            More About Us{" "}
-            <ArrowRight
-              size={18}
-              className="transition-transform group-hover:translate-x-1"
-            />
-          </HashLink>
+            {({ closeDialog }) => (
+              <div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {[
+                    [
+                      Target,
+                      "Our mission",
+                      "Make quality higher education more accessible and career focused.",
+                    ],
+                    [
+                      Handshake,
+                      "Our partnerships",
+                      "Connect learners with trusted universities and relevant programs.",
+                    ],
+                    [
+                      GraduationCap,
+                      "Our support",
+                      "Guide students from course discovery through the admission journey.",
+                    ],
+                  ].map(([Icon, title, copy]) => (
+                    <div
+                      key={title}
+                      className="min-w-0 rounded-2xl border border-sky-100 bg-white/80 p-4 shadow-sm"
+                    >
+                      <Icon className="size-5 text-[#0C529F]" />
+                      <h3 className="mt-3 text-sm font-bold text-[#151d31]">
+                        {title}
+                      </h3>
+                      <p className="mt-1 break-words text-xs leading-5 text-slate-600">
+                        {copy}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-5 rounded-2xl bg-[#0C529F]/5 p-5">
+                  <h3 className="font-bold text-[#151d31]">
+                    What learners can expect
+                  </h3>
+                  <div className="mt-3 grid gap-2 text-sm text-slate-700 sm:grid-cols-2">
+                    {[
+                      "Personalized program guidance",
+                      "Flexible learning options",
+                      "Clear admissions assistance",
+                      "Career-oriented course choices",
+                    ].map((item) => (
+                      <p key={item} className="flex min-w-0 items-center gap-2">
+                        <CheckCircle2 className="size-4 shrink-0 text-[#0C529F]" />
+                        <span className="break-words">{item}</span>
+                      </p>
+                    ))}
+                  </div>
+                </div>
+
+                <AnimatedButton
+                  smooth
+                  to="/#contact"
+                  onClick={closeDialog}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#0C529F] px-6 py-3 text-sm font-semibold text-white"
+                >
+                  Speak with our team <ArrowRight size={17} />
+                </AnimatedButton>
+              </div>
+            )}
+          </ProjectDialog>
         </motion.div>
       </div>
     </section>

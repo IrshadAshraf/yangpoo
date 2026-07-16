@@ -1,8 +1,17 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  GraduationCap,
+  Menu,
+  MessagesSquare,
+  X,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { HashLink } from "react-router-hash-link";
 import logo from "@/assets/navbar/image 25.png";
+import AnimatedButton from "@/components/ui/AnimatedButton";
+import ProjectDialog from "@/components/ui/ProjectDialog";
 
 const navigation = [
   { label: "Home", to: "/#hero" },
@@ -15,9 +24,111 @@ const navigation = [
 const smoothScroll = (element) =>
   element?.scrollIntoView({ behavior: "smooth", block: "start" });
 
+function EnquiryDialog({ mobile = false }) {
+  return (
+    <ProjectDialog
+      eyebrow="Admissions enquiry"
+      title="Let’s find the right next step for you"
+      description="Tell our education advisors what you want to achieve and they’ll help you compare suitable universities, programs, and learning formats."
+      trigger={({ openDialog }) => (
+        <AnimatedButton
+          type="button"
+          onClick={openDialog}
+          className={
+            mobile
+              ? "mt-2 flex w-full items-center justify-between rounded-2xl bg-[#0C529F] px-5 py-3 font-medium text-white"
+              : "group flex items-center gap-4 rounded-full bg-[#0C529F] px-7 py-3 text-[16px] font-medium text-white transition-colors hover:bg-[#094783] cursor-pointer"
+          }
+        >
+          Enquire Now
+          <ArrowRight
+            size={19}
+            className="transition-transform group-hover:translate-x-1"
+          />
+        </AnimatedButton>
+      )}
+    >
+      {({ closeDialog }) => (
+        <div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-sky-100 bg-white/80 p-5 shadow-sm">
+              <GraduationCap className="size-6 text-[#0C529F]" />
+              <h3 className="mt-3 font-bold text-[#151d31]">
+                Program matching
+              </h3>
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Compare degrees, certifications, and executive programs around
+                your goals.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-sky-100 bg-white/80 p-5 shadow-sm">
+              <MessagesSquare className="size-6 text-[#0C529F]" />
+              <h3 className="mt-3 font-bold text-[#151d31]">
+                Personal guidance
+              </h3>
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Get clarity on eligibility, schedules, fees, and the enrollment
+                process.
+              </p>
+            </div>
+          </div>
+          <div className="mt-5 space-y-2 rounded-2xl bg-[#0C529F]/5 p-5 text-sm text-slate-700">
+            {[
+              "No-obligation consultation",
+              "Guidance matched to your experience",
+              "Support through the application journey",
+            ].map((item) => (
+              <p key={item} className="flex items-center gap-2">
+                <CheckCircle2 className="size-4 shrink-0 text-[#0C529F]" />{" "}
+                {item}
+              </p>
+            ))}
+          </div>
+          <AnimatedButton
+            smooth
+            to="/#contact"
+            onClick={closeDialog}
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#0C529F] px-6 py-3 text-sm font-semibold text-white"
+          >
+            Start your enquiry <ArrowRight size={17} />
+          </AnimatedButton>
+        </div>
+      )}
+    </ProjectDialog>
+  );
+}
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("Home");
+  const isClickScrolling = useRef(false);
+  const resumeAwarenessTimer = useRef(null);
+
+  const resumeComponentAwareness = (delay = 180) => {
+    window.clearTimeout(resumeAwarenessTimer.current);
+    resumeAwarenessTimer.current = window.setTimeout(() => {
+      isClickScrolling.current = false;
+    }, delay);
+  };
+
+  const handleNavigationClick = (label) => {
+    isClickScrolling.current = true;
+    setActiveLink(label);
+    resumeComponentAwareness(1400);
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isClickScrolling.current) resumeComponentAwareness();
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.clearTimeout(resumeAwarenessTimer.current);
+    };
+  }, []);
 
   useEffect(() => {
     const sections = navigation
@@ -29,6 +140,8 @@ export default function Navbar() {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if (isClickScrolling.current) return;
+
         const visibleSection = entries.find((entry) => entry.isIntersecting);
 
         if (visibleSection) {
@@ -55,6 +168,7 @@ export default function Navbar() {
         <HashLink
           smooth
           to="/#hero"
+          onClick={() => handleNavigationClick("Home")}
           className="shrink-0"
           aria-label="Yangpoo home"
         >
@@ -71,7 +185,7 @@ export default function Navbar() {
               key={item.label}
               to={item.to}
               scroll={smoothScroll}
-              onClick={() => setActiveLink(item.label)}
+              onClick={() => handleNavigationClick(item.label)}
               className={`relative rounded-full px-6 py-3 text-[16px] font-medium transition-colors xl:px-7 ${
                 activeLink === item.label
                   ? "text-white"
@@ -98,20 +212,10 @@ export default function Navbar() {
           >
             Refer
           </HashLink>
-          <HashLink
-            to="/#contact"
-            scroll={smoothScroll}
-            className="group flex items-center gap-4 rounded-full bg-[#0C529F] px-7 py-3 text-[16px] font-medium text-white transition-colors hover:bg-[#094783]"
-          >
-            Enquire Now
-            <ArrowRight
-              size={19}
-              className="transition-transform group-hover:translate-x-1"
-            />
-          </HashLink>
+          <EnquiryDialog />
         </div>
 
-        <button
+        <AnimatedButton
           type="button"
           onClick={() => setIsOpen((open) => !open)}
           className="grid size-12 place-items-center rounded-full bg-white text-slate-900 shadow-md lg:hidden"
@@ -119,7 +223,7 @@ export default function Navbar() {
           aria-expanded={isOpen}
         >
           {isOpen ? <X /> : <Menu />}
-        </button>
+        </AnimatedButton>
       </nav>
 
       <AnimatePresence>
@@ -136,7 +240,7 @@ export default function Navbar() {
                 to={item.to}
                 scroll={smoothScroll}
                 onClick={() => {
-                  setActiveLink(item.label);
+                  handleNavigationClick(item.label);
                   setIsOpen(false);
                 }}
                 className={`block rounded-2xl px-5 py-3 font-medium transition-colors ${
@@ -148,14 +252,7 @@ export default function Navbar() {
                 {item.label}
               </HashLink>
             ))}
-            <HashLink
-              to="/#contact"
-              scroll={smoothScroll}
-              onClick={() => setIsOpen(false)}
-              className="mt-2 flex items-center justify-between rounded-2xl bg-[#0C529F] px-5 py-3 font-medium text-white"
-            >
-              Enquire Now <ArrowRight size={19} />
-            </HashLink>
+            <EnquiryDialog mobile />
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,5 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, CalendarDays, Clock3, FileText } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CalendarDays,
+  Clock3,
+  FileText,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import graduateGroup from "@/assets/articles/aa8a15f6a70beae125b983ee3b41090c6fde231a.png";
 import libraryGroup from "@/assets/articles/bcba8dc3659441dfeadbee61098b255b27e200dc.png";
@@ -7,6 +13,7 @@ import graduateStudent from "@/assets/articles/e3ad0521753a3b8f9aeed1b08583b7247
 import authorOne from "@/assets/articles/41e5c0d7fac020f2869e60e0b9c25af5114bc8f2.png";
 import authorTwo from "@/assets/articles/63fed0f67a8f66b5f2625e9773736c895c2e0d80.png";
 import authorThree from "@/assets/articles/946fd858ff479e059554f27658f8596ba99bbab5.png";
+import AnimatedButton from "@/components/ui/AnimatedButton";
 
 const articles = [
   {
@@ -54,13 +61,29 @@ function ArticleCard({ article, index, carousel = false }) {
 
   return (
     <motion.article
-      className="group relative h-full overflow-hidden rounded-[24px] p-[2px] shadow-[0_12px_34px_rgba(15,23,42,.1)] [transform-style:preserve-3d]"
+      layout={carousel ? "size" : false}
+      className={`motion-card-smooth group relative overflow-hidden rounded-[24px] p-[2px] shadow-[0_12px_34px_rgba(15,23,42,.1)] [transform-style:preserve-3d] ${carousel ? "h-auto" : "h-full"}`}
       initial={carousel ? false : { opacity: 0, scale: 0.9, ...reveal }}
-      whileInView={carousel ? undefined : { opacity: 1, scale: 1, x: 0, y: 0, rotate: 0 }}
+      whileInView={
+        carousel ? undefined : { opacity: 1, scale: 1, x: 0, y: 0, rotate: 0 }
+      }
       viewport={{ once: true, amount: 0.2 }}
       animate={{ rotateX: tilt.x, rotateY: tilt.y }}
-      transition={{ duration: 0.7, delay: index * 0.14, ease: "easeOut" }}
-      whileHover={{ y: -9, scale: 1.012 }}
+      transition={{
+        layout: { type: "spring", stiffness: 145, damping: 24, mass: 0.9 },
+        opacity: { duration: 0.7, delay: index * 0.14, ease: "easeOut" },
+        scale: { duration: 0.7, delay: index * 0.14, ease: "easeOut" },
+        x: { duration: 0.7, delay: index * 0.14, ease: "easeOut" },
+        y: { type: "spring", stiffness: 155, damping: 23, mass: 0.95 },
+        rotate: { duration: 0.7, delay: index * 0.14, ease: "easeOut" },
+        rotateX: { type: "spring", stiffness: 115, damping: 20, mass: 0.8 },
+        rotateY: { type: "spring", stiffness: 115, damping: 20, mass: 0.8 },
+      }}
+      whileHover={{
+        y: -7,
+        scale: 1.01,
+        transition: { type: "spring", stiffness: 155, damping: 23, mass: 0.95 },
+      }}
       onMouseMove={handleMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
       style={{ transformPerspective: 1000 }}
@@ -69,35 +92,75 @@ function ArticleCard({ article, index, carousel = false }) {
         aria-hidden="true"
         className="absolute -inset-[100%] bg-[conic-gradient(from_0deg,transparent_5%,#7dd3fc_19%,#0C529F_31%,#a78bfa_40%,transparent_54%)] opacity-60"
         animate={{ rotate: 360 }}
-        transition={{ duration: 5.5 + index * 0.6, repeat: Infinity, ease: "linear" }}
+        transition={{
+          duration: 5.5 + index * 0.6,
+          repeat: Infinity,
+          ease: "linear",
+        }}
       />
 
-      <div className="relative flex h-full min-h-[490px] flex-col rounded-[22px] bg-white p-3 sm:min-h-[520px] sm:p-4">
+      <div
+        className={`motion-card-fill relative flex flex-col rounded-[22px] bg-white p-3 sm:p-4 ${carousel ? "h-auto min-h-0" : "h-full min-h-[490px] sm:min-h-[520px]"}`}
+      >
         <div className="relative aspect-[3/2] overflow-hidden rounded-[18px]">
-          <motion.img
-            src={article.image}
-            alt={article.title}
-            className="h-full w-full object-cover"
+          <motion.div
+            className="h-full w-full"
             animate={{ scale: [1.02, 1.07, 1.02], y: [0, -5, 0] }}
-            transition={{ duration: 7 + index, repeat: Infinity, ease: "easeInOut" }}
-            whileHover={{ scale: 1.13, rotate: index === 1 ? 1 : -1 }}
-          />
+            transition={{
+              duration: 7 + index,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <motion.img
+              src={article.image}
+              alt={article.title}
+              className="h-full w-full object-cover"
+              whileHover={{
+                scale: 1.04,
+                rotate: index === 1 ? 0.6 : -0.6,
+                transition: {
+                  type: "spring",
+                  stiffness: 135,
+                  damping: 24,
+                  mass: 0.95,
+                },
+              }}
+            />
+          </motion.div>
           <motion.span
             aria-hidden="true"
             className="pointer-events-none absolute -inset-y-10 -left-1/2 w-1/3 skew-x-[-18deg] bg-gradient-to-r from-transparent via-white/45 to-transparent"
             animate={{ x: ["0%", "520%"] }}
-            transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 3 + index, ease: "easeInOut", delay: index * 0.5 }}
+            transition={{
+              duration: 2.2,
+              repeat: Infinity,
+              repeatDelay: 3 + index,
+              ease: "easeInOut",
+              delay: index * 0.5,
+            }}
           />
           <motion.span
             className="absolute bottom-3 right-3 rounded-full bg-[#0C529F]/90 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-white opacity-0 backdrop-blur-md transition-opacity group-hover:opacity-100"
-            whileHover={{ scale: 1.08 }}
+            whileHover={{
+              scale: 1.06,
+              transition: {
+                type: "spring",
+                stiffness: 150,
+                damping: 21,
+                mass: 0.8,
+              },
+            }}
           >
             Read article
           </motion.span>
         </div>
 
         <div className="mt-4 flex items-center gap-2 text-xs text-slate-700 sm:text-sm">
-          <motion.span animate={{ rotate: [0, -8, 8, 0] }} transition={{ duration: 3, repeat: Infinity, delay: index * 0.4 }}>
+          <motion.span
+            animate={{ rotate: [0, -8, 8, 0] }}
+            transition={{ duration: 3, repeat: Infinity, delay: index * 0.4 }}
+          >
             <CalendarDays size={16} />
           </motion.span>
           {article.date}
@@ -110,8 +173,18 @@ function ArticleCard({ article, index, carousel = false }) {
         <div className="mt-auto flex items-center justify-between gap-3 pt-7">
           <div className="flex min-w-0 items-center gap-3">
             <motion.div
-              className="relative size-10 shrink-0 overflow-hidden rounded-full p-[2px]"
-              whileHover={{ scale: 1.18, rotate: 8, y: -4 }}
+              className="motion-avatar-smooth relative size-10 shrink-0 overflow-hidden rounded-full p-[2px]"
+              whileHover={{
+                scale: 1.12,
+                rotate: 4,
+                y: -3,
+                transition: {
+                  type: "spring",
+                  stiffness: 160,
+                  damping: 21,
+                  mass: 0.8,
+                },
+              }}
             >
               <motion.span
                 className="absolute -inset-[70%] bg-[conic-gradient(#7dd3fc,#0C529F,#a78bfa,#7dd3fc)]"
@@ -119,12 +192,30 @@ function ArticleCard({ article, index, carousel = false }) {
                 transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
               />
               <span className="relative block h-full rounded-full bg-white p-[2px]">
-                <img src={article.avatar} alt={article.author} className="h-full w-full rounded-full object-cover" />
+                <img
+                  src={article.avatar}
+                  alt={article.author}
+                  className="h-full w-full rounded-full object-cover"
+                />
               </span>
             </motion.div>
-            <span className="truncate text-sm font-medium text-slate-900">{article.author}</span>
+            <span className="truncate text-sm font-medium text-slate-900">
+              {article.author}
+            </span>
           </div>
-          <motion.span className="flex shrink-0 items-center gap-2 text-xs text-slate-700 sm:text-sm" whileHover={{ x: 4, color: "#0C529F" }}>
+          <motion.span
+            className="flex shrink-0 items-center gap-2 text-xs text-slate-700 sm:text-sm"
+            whileHover={{
+              x: 4,
+              color: "#0C529F",
+              transition: {
+                type: "spring",
+                stiffness: 170,
+                damping: 23,
+                mass: 0.75,
+              },
+            }}
+          >
             <Clock3 size={15} fill="currentColor" /> {article.readTime}
           </motion.span>
         </div>
@@ -147,7 +238,10 @@ export default function Articles() {
 
   const changeSlide = (nextDirection) => {
     setDirection(nextDirection);
-    setActiveIndex((current) => (current + nextDirection + articles.length) % articles.length);
+    setActiveIndex(
+      (current) =>
+        (current + nextDirection + articles.length) % articles.length,
+    );
   };
 
   return (
@@ -160,13 +254,40 @@ export default function Articles() {
       />
 
       <div className="relative mx-auto max-w-[1600px] px-5 lg:px-8">
-        <motion.div className="mx-auto max-w-[760px] text-center" initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.65 }}>
-          <motion.div className="relative inline-flex overflow-hidden rounded-full p-[2px]" animate={{ boxShadow: ["0 4px 12px rgba(12,82,159,.04)", "0 7px 23px rgba(12,82,159,.17)", "0 4px 12px rgba(12,82,159,.04)"] }} transition={{ duration: 3, repeat: Infinity }}>
-            <motion.span className="absolute -inset-[100%] bg-[conic-gradient(transparent,#7dd3fc,#0C529F,#a78bfa,transparent_48%)] opacity-55" animate={{ rotate: 360 }} transition={{ duration: 3.8, repeat: Infinity, ease: "linear" }} />
-            <span className="relative inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium"><FileText size={15} /> Articles</span>
+        <motion.div
+          className="mx-auto max-w-[760px] text-center"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.65 }}
+        >
+          <motion.div
+            className="relative inline-flex overflow-hidden rounded-full p-[2px]"
+            animate={{
+              boxShadow: [
+                "0 4px 12px rgba(12,82,159,.04)",
+                "0 7px 23px rgba(12,82,159,.17)",
+                "0 4px 12px rgba(12,82,159,.04)",
+              ],
+            }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
+            <motion.span
+              className="absolute -inset-[100%] bg-[conic-gradient(transparent,#7dd3fc,#0C529F,#a78bfa,transparent_48%)] opacity-55"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 3.8, repeat: Infinity, ease: "linear" }}
+            />
+            <span className="relative inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium">
+              <FileText size={15} /> Articles
+            </span>
           </motion.div>
-          <h2 className="mt-6 text-[37px] font-bold leading-[1.15] tracking-[-0.045em] text-black sm:text-[50px] lg:text-[56px]">Explore the latest learning insights and trends</h2>
-          <p className="mx-auto mt-5 max-w-[650px] text-base leading-7 text-slate-700 sm:text-lg">Discover articles, tips, and resources designed to help you grow your skills and stay ahead.</p>
+          <h2 className="mt-6 text-[28px] font-semibold leading-[1.15] tracking-[-0.045em] text-black sm:text-[50px] lg:text-[50px]">
+            Explore the latest learning insights and trends
+          </h2>
+          <p className="mx-auto mt-5 max-w-[650px] text-base leading-7 text-slate-700 sm:text-lg">
+            Discover articles, tips, and resources designed to help you grow
+            your skills and stay ahead.
+          </p>
         </motion.div>
 
         <div className="mt-14 hidden grid-cols-3 gap-7 lg:grid xl:gap-8">
@@ -176,31 +297,69 @@ export default function Articles() {
         </div>
 
         <div className="mx-auto mt-12 max-w-[580px] lg:hidden">
-          <div className="relative overflow-hidden py-3 [perspective:1100px]">
-            <AnimatePresence initial={false} mode="wait" custom={direction}>
+          <motion.div
+            layout="size"
+            className="relative overflow-hidden py-3 [perspective:1100px]"
+            transition={{
+              layout: {
+                type: "spring",
+                stiffness: 145,
+                damping: 24,
+                mass: 0.9,
+              },
+            }}
+          >
+            <AnimatePresence
+              initial={false}
+              mode="popLayout"
+              custom={direction}
+            >
               <motion.div
                 key={activeIndex}
-                initial={{ x: direction > 0 ? 110 : -110, opacity: 0, scale: 0.9, rotateY: direction > 0 ? 10 : -10 }}
+                layout="size"
+                initial={{
+                  x: direction > 0 ? 110 : -110,
+                  opacity: 0,
+                  scale: 0.9,
+                  rotateY: direction > 0 ? 10 : -10,
+                }}
                 animate={{ x: 0, opacity: 1, scale: 1, rotateY: 0 }}
-                exit={{ x: direction > 0 ? -110 : 110, opacity: 0, scale: 0.9, rotateY: direction > 0 ? -10 : 10 }}
+                exit={{
+                  x: direction > 0 ? -110 : 110,
+                  opacity: 0,
+                  scale: 0.9,
+                  rotateY: direction > 0 ? -10 : 10,
+                }}
                 transition={{ type: "spring", stiffness: 250, damping: 25 }}
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.2}
                 onDragEnd={(_, info) => {
-                  if (Math.abs(info.offset.x) > 45) changeSlide(info.offset.x < 0 ? 1 : -1);
+                  if (Math.abs(info.offset.x) > 45)
+                    changeSlide(info.offset.x < 0 ? 1 : -1);
                 }}
               >
-                <ArticleCard article={articles[activeIndex]} index={activeIndex} carousel />
+                <ArticleCard
+                  article={articles[activeIndex]}
+                  index={activeIndex}
+                  carousel
+                />
               </motion.div>
             </AnimatePresence>
-          </div>
+          </motion.div>
 
           <div className="mt-5 flex items-center justify-between">
-            <button type="button" onClick={() => changeSlide(-1)} className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-[#0C529F] shadow-sm transition hover:bg-[#0C529F] hover:text-white" aria-label="Previous article"><ArrowLeft size={19} /></button>
+            <AnimatedButton
+              type="button"
+              onClick={() => changeSlide(-1)}
+              className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-[#0C529F] shadow-sm transition hover:bg-[#0C529F] hover:text-white"
+              aria-label="Previous article"
+            >
+              <ArrowLeft size={19} />
+            </AnimatedButton>
             <div className="flex gap-2">
               {articles.map((article, index) => (
-                <button
+                <AnimatedButton
                   key={article.title}
                   type="button"
                   onClick={() => {
@@ -212,7 +371,14 @@ export default function Articles() {
                 />
               ))}
             </div>
-            <button type="button" onClick={() => changeSlide(1)} className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-[#0C529F] shadow-sm transition hover:bg-[#0C529F] hover:text-white" aria-label="Next article"><ArrowRight size={19} /></button>
+            <AnimatedButton
+              type="button"
+              onClick={() => changeSlide(1)}
+              className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-[#0C529F] shadow-sm transition hover:bg-[#0C529F] hover:text-white"
+              aria-label="Next article"
+            >
+              <ArrowRight size={19} />
+            </AnimatedButton>
           </div>
         </div>
       </div>
