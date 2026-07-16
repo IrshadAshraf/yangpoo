@@ -13,21 +13,7 @@ import Footer from "@/components/Footer";
 import { DrawerProvider } from "@/components/Drawer";
 
 function Home() {
-  return (
-    <DrawerProvider>
-      <Navbar />
-      <Hero />
-      <EmployeeConcern />
-      <Platform />
-      <Features />
-      <Workforce />
-      <Workplace />
-      <FAQs />
-      <LatestNews />
-      <ContactUs />
-      <Footer />
-    </DrawerProvider>
-  );
+  return <div>Home</div>;
 }
 
 export default Home;
