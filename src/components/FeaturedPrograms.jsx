@@ -153,10 +153,28 @@ export default function FeaturedPrograms() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.65, ease: "easeOut" }}
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm">
-            <img src={featuredIcon} alt="" className="size-4 object-contain" />
-            Featured Program
-          </div>
+          <motion.div
+            className="relative inline-flex overflow-hidden rounded-full p-[2px] shadow-[0_6px_20px_rgba(12,82,159,0.12)]"
+            animate={{
+              boxShadow: [
+                "0 6px 18px rgba(12,82,159,0.1)",
+                "0 8px 28px rgba(12,82,159,0.25)",
+                "0 6px 18px rgba(12,82,159,0.1)",
+              ],
+            }}
+            transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <motion.span
+              aria-hidden="true"
+              className="absolute -inset-[120%] bg-[conic-gradient(from_0deg,transparent_5%,#7dd3fc_20%,#0C529F_38%,transparent_55%)]"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 3.2, repeat: Infinity, ease: "linear" }}
+            />
+            <span className="relative inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-900">
+              <img src={featuredIcon} alt="" className="size-4 object-contain" />
+              Featured Program
+            </span>
+          </motion.div>
           <h2 className="mt-5 text-[36px] font-bold leading-tight tracking-[-0.045em] text-[#141b2d] sm:text-[48px] lg:text-[54px]">
             Find the Right Program for You
           </h2>
