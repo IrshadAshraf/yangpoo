@@ -48,7 +48,7 @@ export default function AnimatedButton({
     <Component
       {...componentProps}
       {...props}
-      className={`group/animated-button relative isolate overflow-hidden [transform-style:preserve-3d] disabled:pointer-events-none disabled:opacity-60 ${className}`}
+      className={`group/animated-button relative isolate overflow-hidden [transform-style:preserve-3d] ${disabled ? "cursor-not-allowed" : "cursor-pointer"} disabled:pointer-events-none disabled:opacity-60 ${className}`}
       animate={
         isKeyPressed
           ? {
